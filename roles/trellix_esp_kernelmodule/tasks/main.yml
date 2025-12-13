@@ -16,8 +16,6 @@
     state: "present"
 
 - name: "Install Trellix ESP Kernel Module"
-  # when:
-  #   - not trellix_esp_kernelmodule_version_check is defined or trellix_esp_kernelmodule_version_check != trellix_esp_kernelmodule_version
   block:
     - name: "Create Trellix ESP Kernel Module temporary directory"
       ansible.builtin.file:
@@ -42,13 +40,12 @@
         chdir: "{{ _trellix_esp_kernelmodule_src_extract_path }}"
       register: trellix_esp_kernelmodule_install_output
       changed_when: false
-      register: trellix_esp_kernelmodule_install_output
       retries: 5
       delay: 10
       until: trellix_esp_kernelmodule_install_output.rc == 0
 
-  # always:
-  #   - name: "Clean temporary McAfee Agent installation directory"
-  #     ansible.builtin.file:
-  #       path: "{{ _trellix_ens_tp_src_extract_path }}"
-  #       state: "absent"
+  always:
+    - name: "Clean temporary McAfee Agent installation directory"
+      ansible.builtin.file:
+        path: "{{ _trellix_esp_kernelmodule_src_extract_path }}"
+        state: "absent"
