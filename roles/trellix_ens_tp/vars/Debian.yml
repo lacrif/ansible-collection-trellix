@@ -1,0 +1,4 @@
+_trellix_ens_tp_dependencies:
+  - "unzip"
+
+_trellix_ens_tp_package: "mcafeetp"

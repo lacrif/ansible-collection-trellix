@@ -1,0 +1,77 @@
+---
+
+- name: "Display the version of Trellix Agent"
+  ansible.builtin.debug:
+    msg: "Installation version of Trellix Agent : {{ trellix_agent_version }}"
+
+- name: "Include OS-specific variables"
+  ansible.builtin.include_vars: "{{ item }}"
+  loop:
+    - "main.yml"
+    - "{{ ansible_os_family }}.yml"
+
+- name: "Install dependencies for Trellix Agent"
+  ansible.builtin.package:
+    name: "{{ _trellix_agent_dependencies }}"
+    state: "present"
+
+- name: "Gather package facts"
+  ansible.builtin.package_facts:
+    manager: auto
+
+- name: "Check current version of Trellix Agent"
+  ansible.builtin.debug:
+    msg: "The current version of Trellix Agent is : {{ ansible_facts.packages[_trellix_agent_package][0].version }}"
+  when: 
+    - _trellix_agent_package in ansible_facts.packages
+    - ansible_facts.packages[_trellix_agent_package][0].version is version(trellix_agent_version, '>=')
+
+- name: "Install Trellix Agent"
+  when: 
+    - _trellix_agent_package not in ansible_facts.packages or ansible_facts.packages[_trellix_agent_package][0].version is version(trellix_agent_version, '<')
+  block:
+    - name: "Create McAfee Agent temporary directory"
+      ansible.builtin.file:
+        path: "{{ _trellix_agent_extract_path }}"
+        state: "directory"
+        mode: "0755"
+
+    - name: "Unarchive Agent Packages"
+      ansible.builtin.unarchive:
+        src: "{{ trellix_agent_src_path }}/{{ trellix_agent_version }}/agentPackages.zip"
+        dest: "{{ _trellix_agent_extract_path }}"
+        remote_src: yes
+
+    - name: "Set execute permision on McAfee Agent installation script"
+      ansible.builtin.file:
+        path: "{{ _trellix_agent_extract_path }}/install.sh"
+        mode: "0744"
+
+    - name: "Install McAfee Agent"
+      ansible.builtin.command: "sh {{ _trellix_agent_extract_path }}/install.sh -i"
+      args:
+        chdir: "{{ _trellix_agent_extract_path }}"
+      register: trellix_agent_install_output
+      changed_when: false
+      retries: 5
+      delay: 10
+      until: trellix_agent_install_output.rc == 0
+      when: 
+        - trellix_agent_version_check is not defined
+
+    - name: "Update McAfee Agent"
+      ansible.builtin.command: "{{ _trellix_agent_extract_path }}/install.sh -u"
+      register: trellix_agent_update_output
+      changed_when: false
+      retries: 5
+      delay: 10
+      until: trellix_agent_update_output.rc == 0
+      when: 
+        - trellix_agent_version_check is defined
+        - trellix_agent_version_check != trellix_agent_version
+
+  always:
+    - name: "Clean temporary McAfee Agent installation directory"
+      ansible.builtin.file:
+        path: "{{ _trellix_agent_extract_path }}"
+        state: "absent"

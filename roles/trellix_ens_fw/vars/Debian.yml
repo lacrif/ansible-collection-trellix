@@ -1,0 +1,6 @@
+_trellix_ens_fw_dependencies:
+  - "unzip"
+  - "iptables"
+  - "iproute2"
+
+_trellix_ens_fw_package: "mcafeefw"

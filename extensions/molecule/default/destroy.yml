@@ -1,0 +1,66 @@
+---
+- name: 'Destroy'
+  hosts: 'all'
+  become: true
+  tasks:
+    - name: "Verify Trellix ENS TP uninstall script exists"
+      ansible.builtin.stat:
+        path: "/opt/McAfee/ens/tp/scripts/uninstall-mfetp.sh"
+      register: trellix_ens_tp_install_output_file
+
+    - name: "Uninstall Trellix ENS TP"
+      ansible.builtin.command: "/opt/McAfee/ens/tp/scripts/uninstall-mfetp.sh silent"
+      register: trellix_ens_tp_install_output
+      changed_when: false
+      when:
+        - trellix_ens_tp_install_output_file.stat.exists
+
+    - name: "Display Trellix ENS TP uninstall output"
+      ansible.builtin.debug:
+        var: trellix_ens_tp_install_output
+      when:
+        - trellix_ens_tp_install_output_file.stat.exists
+  
+    - name: "Verify Trellix ENS FW uninstall script exists"
+      ansible.builtin.stat:
+        path: "/opt/McAfee/ens/fw/scripts/uninstall-mfefw.sh"
+      register: trellix_ens_fw_install_output_file
+
+    - name: "Uninstall Trellix ENS FW"
+      ansible.builtin.command: "/opt/McAfee/ens/fw/scripts/uninstall-mfefw.sh silent"
+      register: trellix_ens_fw_install_output
+      changed_when: false
+      when:
+        - trellix_ens_fw_install_output_file.stat.exists
+
+    - name: "Display Trellix ENS FW uninstall output"
+      ansible.builtin.debug:
+        var: trellix_ens_tp_install_output
+      when:
+        - trellix_ens_fw_install_output_file.stat.exists
+
+    - name: "Verify Trellix Agent uninstall script exists"
+      ansible.builtin.stat:
+        path: "/opt/McAfee/agent/scripts/uninstall.sh"
+      register: trellix_agent_uninstall_output_file
+
+    - name: "Uninstall Trellix Agent"
+      ansible.builtin.command: "/opt/McAfee/agent/scripts/uninstall.sh"
+      register: trellix_agent_uninstall_output
+      changed_when: false
+      retries: 5
+      delay: 10
+      until: trellix_agent_uninstall_output.rc == 0
+      when:
+        - trellix_agent_uninstall_output_file.stat.exists
+
+    - name: "Display Trellix Agent uninstall output"
+      ansible.builtin.debug:
+        var: trellix_agent_uninstall_output
+      when:
+        - trellix_agent_uninstall_output_file.stat.exists
+
+    - name: "Clean McAfee Agent installation directory"
+      ansible.builtin.file:
+        path: "/opt/McAfee"
+        state: "absent"

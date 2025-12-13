@@ -1,0 +1,13 @@
+---
+
+# Trellix ENS TP version to be installed
+trellix_ens_tp_version: "10.7.21"
+
+# Source path where Trellix ENS TP installation packages are located
+trellix_ens_tp_src_path: "/mnt/sources_ansible/mcafee/ens"
+
+# Installation options for Trellix ENS TP
+# - oasoff : Allows ENSLTP to be installed with Access Protection disabled.
+# - nocontentupdate : Disables the first-time content update that runs after ENSLTP startup
+# https://thrive.trellix.com/s/article/KB88299?language=en_US&page=content&id=KB88299
+trellix_ens_tp_install_options: ""

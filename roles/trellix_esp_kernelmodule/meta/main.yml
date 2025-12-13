@@ -1,0 +1,12 @@
+---
+galaxy_info:
+  author: 'Christophe Lacombe'
+  description: 'Trellix ESP kernel module'
+  company: 'Lacrif'
+  license: 'GPL-2.0-or-later'
+  min_ansible_version: '2.7'
+  galaxy_tags:
+    - 'trellix'
+    - 'esp'
+
+dependencies: []

@@ -1,0 +1,7 @@
+---
+
+# Default variables for Trellix ENS FW role
+trellix_ens_fw_version: "10.7.21"
+
+# Source path where Trellix ENS FW installation packages are located
+trellix_ens_fw_src_path: "/mnt/sources_ansible/mcafee/ens"

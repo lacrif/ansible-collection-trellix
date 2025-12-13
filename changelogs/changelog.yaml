@@ -1,0 +1,7 @@
+# changelog.yaml
+---
+releases:
+- version: 1.0.0
+  date: 2023-01-15
+  changes:
+    - Added initial release with core features.

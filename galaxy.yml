@@ -1,0 +1,23 @@
+---
+namespace: "lacrif"
+name: "trellix"
+version: 1.0.0
+readme: "README.md"
+license: 
+  - "GPL-2.0-or-later"
+authors:
+  - Lacrif
+
+description: "Collection pour Trellix ePolicy Orchestrator (ePO) - Modules et plugins Ansible"
+license_file: LICENSE
+
+tags: ["trellix", "agent", "epo", "epolicy", "orchestrator", "security", "antivirus", "ansible"]
+
+repository: https://github.com/lacrif/ansible-collection-trellix
+documentation: https://github.com/lacrif/ansible-collection-trellix
+homepage: https://github.com/lacrif/ansible-collection-trellix
+issues: https://github.com/lacrif/ansible-collection-trellix/issues
+
+build_ignore:
+  - .gitignore
+  - changelogs/.plugin-cache.yaml

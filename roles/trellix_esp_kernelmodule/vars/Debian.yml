@@ -1,0 +1,4 @@
+_trellix_esp_kernelmodule_dependencies:
+  - "unzip"
+
+_trellix_esp_kernelmodule_package: "McAfeeESPKernelModule"

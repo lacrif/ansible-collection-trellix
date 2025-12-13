@@ -1,0 +1,4 @@
+_trellix_agent_dependencies:
+  - "unzip"
+
+_trellix_agent_package: "mfecma"

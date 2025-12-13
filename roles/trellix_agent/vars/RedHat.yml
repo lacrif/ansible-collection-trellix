@@ -1,0 +1,5 @@
+_trellix_agent_dependencies:
+  - "unzip"
+  - "cronie"
+
+_trellix_agent_package: "MFEcma"

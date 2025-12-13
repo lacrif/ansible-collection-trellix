@@ -1,0 +1,65 @@
+---
+
+- name: "Display the version of Trellix ENS"
+  ansible.builtin.debug:
+    msg: "Installation version of Trellix ENS : {{ trellix_ens_tp_version }}"
+
+- name: "Include OS-specific variables"
+  ansible.builtin.include_vars: "{{ item }}"
+  loop:
+    - "main.yml"
+    - "{{ ansible_os_family }}.yml"
+
+- name: "Install dependencies for Trellix ENS TP"
+  ansible.builtin.package:
+    name: "{{ _trellix_ens_tp_dependencies }}"
+    state: "present"
+
+- name: "Gather package facts"
+  ansible.builtin.package_facts:
+    manager: auto
+
+- name: "Check current version of Trellix ENS TP"
+  ansible.builtin.debug:
+    msg: "The current version of Trellix ENS TP is : {{ ansible_facts.packages[_trellix_ens_tp_package][0].version }}"
+  when: 
+    - _trellix_ens_tp_package in ansible_facts.packages
+    - ansible_facts.packages[_trellix_ens_tp_package][0].version is version(trellix_ens_tp_version, '>=')
+
+- name: "Install Trellix ENS TP"
+  when: 
+    - _trellix_ens_tp_package not in ansible_facts.packages or ansible_facts.packages[_trellix_ens_tp_package][0].version is version(trellix_ens_tp_version, '<')
+  block:
+    - name: "Create Trellix ENS TP temporary directory"
+      ansible.builtin.file:
+        path: "{{ _trellix_ens_tp_src_extract_path }}"
+        state: "directory"
+        mode: "0755"
+
+    - name: "Unarchive Agent Packages"
+      ansible.builtin.unarchive:
+        src: "{{ trellix_ens_tp_src_path }}/{{ trellix_ens_tp_version }}/McAfeeTP.zip"
+        dest: "{{ _trellix_ens_tp_src_extract_path }}"
+        remote_src: yes
+
+    - name: "Set execute permision on Trellix ENS TP installation script"
+      ansible.builtin.file:
+        path: "{{ _trellix_ens_tp_src_extract_path }}/install-mfetp.sh"
+        mode: "0744"
+
+    - name: "Install Trellix ENS TP"
+      ansible.builtin.command: "{{ _trellix_ens_tp_src_extract_path }}/install-mfetp.sh silent {{ trellix_ens_tp_install_options }}"
+      args:
+        chdir: "{{ _trellix_ens_tp_src_extract_path }}"
+      register: trellix_ens_tp_install_output
+      changed_when: false
+      register: trellix_ens_tp_install_output
+      retries: 5
+      delay: 10
+      until: trellix_ens_tp_install_output.rc == 0
+
+  always:
+    - name: "Clean temporary McAfee Agent installation directory"
+      ansible.builtin.file:
+        path: "{{ _trellix_ens_tp_src_extract_path }}"
+        state: "absent"

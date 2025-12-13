@@ -1,0 +1,7 @@
+---
+
+# Default variables for trellix_esp_kernelmodule role
+trellix_esp_kernelmodule_version: "10.7.21"
+
+# Path where Trellix ESP Kernel Module source files are located
+trellix_esp_kernelmodule_src_path: "/mnt/sources_ansible/mcafee/ens"

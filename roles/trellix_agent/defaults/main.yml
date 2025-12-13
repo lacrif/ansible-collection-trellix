@@ -1,0 +1,7 @@
+---
+
+# Trellix Agent version to be installed
+trellix_agent_version: "5.8.5"
+
+# Source path where Trellix Agent installation packages are located
+trellix_agent_src_path: "/mnt/sources_ansible/mcafee/agent"

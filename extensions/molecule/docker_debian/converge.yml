@@ -1,0 +1,38 @@
+---
+- name: 'Converge'
+  hosts: 'all'
+  gather_facts: true
+  collections:
+    - lacrif.trellix
+
+  pre_tasks:
+    - name: 'Install dependencies'
+      ansible.builtin.package:
+        name: 
+          - "procps"
+          - "apt-utils"
+          - "kmod"
+          - "sudo"
+          - "nfs-common"
+        state: 'present'
+
+    - name: "Mount NFS volume"
+      become: true
+      ansible.posix.mount:
+        src: "nfs-server.home.lan:/mnt/nfs_share/ansible"
+        path: "/mnt/sources_ansible"
+        state: "mounted"
+        fstype: "nfs"
+        
+  roles:
+    # - role: 'lacrif.trellix.trellix_agent'
+    #   trellix_agent_version: '5.8.4'
+    - role: 'lacrif.trellix.trellix_agent'
+      trellix_agent_version: '5.8.5'
+    - role: 'lacrif.trellix.trellix_ens_tp'
+      trellix_ens_tp_version: '10.7.21'
+      trellix_ens_tp_install_options: "oasoff nocontentupdate"
+    - role: 'lacrif.trellix.trellix_esp_kernelmodule'
+      trellix_esp_kernelmodule_version: '10.7.21'
+    # - role: 'lacrif.trellix.trellix_ens_fw'
+    #   trellix_ens_fw_version: '10.7.21'

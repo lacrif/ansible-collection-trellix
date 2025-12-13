@@ -1,0 +1,30 @@
+---
+role_name_check: 1
+dependency:
+  name: "galaxy"
+  options:
+    ignore-errors: true
+
+driver:
+  name: default
+
+platforms:
+  - name: vm-debian-instance
+
+provisioner:
+  name: ansible
+  links:
+    hosts: inventory.yml
+
+verifier:
+  name: testinfra
+  options:
+    sudo: true
+
+scenario:
+  name: 'default'
+  test_sequence:
+    - destroy
+    - syntax
+    - converge
+    - verify

@@ -1,0 +1,54 @@
+---
+
+- name: "Display the version of Trellix ESP Kernel Module"
+  ansible.builtin.debug:
+    msg: "Installation version of Trellix ESP Kernel Module : {{ trellix_esp_kernelmodule_version }}"
+
+- name: "Include OS-specific variables"
+  ansible.builtin.include_vars: "{{ item }}"
+  loop:
+    - "main.yml"
+    - "{{ ansible_os_family }}.yml"
+
+- name: "Install dependencies for Trellix ESP Kernel Module"
+  ansible.builtin.package:
+    name: "{{ _trellix_esp_kernelmodule_dependencies }}"
+    state: "present"
+
+- name: "Install Trellix ESP Kernel Module"
+  # when:
+  #   - not trellix_esp_kernelmodule_version_check is defined or trellix_esp_kernelmodule_version_check != trellix_esp_kernelmodule_version
+  block:
+    - name: "Create Trellix ESP Kernel Module temporary directory"
+      ansible.builtin.file:
+        path: "{{ _trellix_esp_kernelmodule_src_extract_path }}"
+        state: "directory"
+        mode: "0755"
+
+    - name: "Unarchive Agent Packages"
+      ansible.builtin.unarchive:
+        src: "{{ trellix_esp_kernelmodule_src_path }}/{{ trellix_esp_kernelmodule_version }}/McAfeeESP-KernelModule.zip"
+        dest: "{{ _trellix_esp_kernelmodule_src_extract_path }}"
+        remote_src: yes
+
+    - name: "Set execute permision on Trellix ESP Kernel Module installation script"
+      ansible.builtin.file:
+        path: "{{ _trellix_esp_kernelmodule_src_extract_path }}/update-esp-kernelmodule.sh"
+        mode: "0744"
+
+    - name: "Install Trellix ESP Kernel Module"
+      ansible.builtin.command: "{{ _trellix_esp_kernelmodule_src_extract_path }}/update-esp-kernelmodule.sh"
+      args:
+        chdir: "{{ _trellix_esp_kernelmodule_src_extract_path }}"
+      register: trellix_esp_kernelmodule_install_output
+      changed_when: false
+      register: trellix_esp_kernelmodule_install_output
+      retries: 5
+      delay: 10
+      until: trellix_esp_kernelmodule_install_output.rc == 0
+
+  # always:
+  #   - name: "Clean temporary McAfee Agent installation directory"
+  #     ansible.builtin.file:
+  #       path: "{{ _trellix_ens_tp_src_extract_path }}"
+  #       state: "absent"
