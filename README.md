@@ -48,8 +48,7 @@ Chaque rôle utilise des variables pour configurer les versions et les chemins s
 #### Installation complète d'un agent avec ENS
 
 ```yaml
-- hosts: endpoints
-  become: true
+- hosts: all
   vars:
     trellix_agent_version: "5.8.5"
     trellix_ens_fw_version: "10.7.21"
@@ -65,8 +64,7 @@ Chaque rôle utilise des variables pour configurer les versions et les chemins s
 #### Installation de l'agent uniquement
 
 ```yaml
-- hosts: agents
-  become: true
+- hosts: all
   roles:
     - role: lacrif.trellix.trellix_agent
       vars:
@@ -76,8 +74,7 @@ Chaque rôle utilise des variables pour configurer les versions et les chemins s
 #### Installation d'ENS Threat Prevention avec options personnalisées
 
 ```yaml
-- hosts: servers
-  become: true
+- hosts: all
   roles:
     - role: lacrif.trellix.trellix_ens_tp
       vars:
