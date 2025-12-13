@@ -16,6 +16,7 @@
     state: "present"
 
 - name: "Install Trellix ESP Kernel Module"
+  become: yes
   block:
     - name: "Create Trellix ESP Kernel Module temporary directory"
       ansible.builtin.file:

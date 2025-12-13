@@ -29,6 +29,7 @@
 - name: "Install Trellix ENS TP"
   when: 
     - _trellix_ens_tp_package not in ansible_facts.packages or ansible_facts.packages[_trellix_ens_tp_package][0].version is version(trellix_ens_tp_version, '<')
+  become: yes
   block:
     - name: "Create Trellix ENS TP temporary directory"
       ansible.builtin.file:

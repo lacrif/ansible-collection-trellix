@@ -29,6 +29,7 @@
 - name: "Install Trellix Agent"
   when: 
     - _trellix_agent_package not in ansible_facts.packages or ansible_facts.packages[_trellix_agent_package][0].version is version(trellix_agent_version, '<')
+  become: yes
   block:
     - name: "Create McAfee Agent temporary directory"
       ansible.builtin.file:

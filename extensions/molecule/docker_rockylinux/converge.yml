@@ -2,8 +2,6 @@
 - name: 'Converge'
   hosts: 'all'
   gather_facts: true
-  collections:
-    - lacrif.trellix
 
   pre_tasks:
     - name: 'Install dependencies'

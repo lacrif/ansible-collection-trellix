@@ -1,10 +1,7 @@
 ---
 - name: 'Converge'
   hosts: 'all'
-  become: true
   gather_facts: true
-  collections:
-    - lacrif.trellix
   roles:
     - role: 'lacrif.trellix.trellix_agent'
       trellix_agent_version: '5.8.5'
