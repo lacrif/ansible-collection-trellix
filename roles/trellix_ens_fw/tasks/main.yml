@@ -11,6 +11,7 @@
     - "{{ ansible_os_family }}.yml"
 
 - name: "Install dependencies for Trellix ENS FW"
+  become: yes
   ansible.builtin.package:
     name: "{{ _trellix_ens_fw_dependencies }}"
     state: "present"

@@ -11,6 +11,7 @@
     - "{{ ansible_os_family }}.yml"
 
 - name: "Install dependencies for Trellix Agent"
+  become: yes
   ansible.builtin.package:
     name: "{{ _trellix_agent_dependencies }}"
     state: "present"

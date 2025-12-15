@@ -11,6 +11,7 @@
     - "{{ ansible_os_family }}.yml"
 
 - name: "Install dependencies for Trellix ESP Kernel Module"
+  become: yes
   ansible.builtin.package:
     name: "{{ _trellix_esp_kernelmodule_dependencies }}"
     state: "present"
